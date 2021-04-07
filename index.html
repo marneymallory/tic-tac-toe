@@ -13,11 +13,20 @@
 </head>
 <body>
   <div class="container">
-    <div class="jumbotron">
+    <div class="jumbotron text-center">
       <h1>Tic-Tac-Toe</h1>
       <p>Click the button below to start playing!</p>
     </div>
-    <button type="button" class="btn btn-success">Tic-Tac-Toe</button>
+
+    <form id="userName">
+      <div class="form-group">
+        <label for="player1">Player 1</label>
+        <input type="text" id="player1" class="form-control">
+        <label for="player2">Player 2</label>
+        <input type="text" id="player2" class="form-control">
+      </div>
+      <button type="submit" class="btn btn-success">Tic-Tac-Toe</button>
+    </form>
     <div class="container-fluid" id="hidden">
       <div class="row">
         <div class="col-12 col-sm-6 content">
@@ -39,7 +48,8 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-2 tic-panel"> PANEL-THINGY<br>Score:<br>Foo bar: stuff<br> Reset game and all that blah </div>
+        <div class="col-12 col-sm-2 tic-panel"><br>Score:<br>
+        </div>
   
   
   
