@@ -9,9 +9,10 @@ Player.prototype.isMyTurn = function(fact) {
 } 
 
 // Business Logic for Game -----
-function Game(players, gameboard) {
+function Game(players, gameboard, Player1git) {
   this.players = players
   this.gameboard = gameboard
+  this.whosTurn = "Player 1"
 }
 
 Game.prototype.isItOver = function() {
@@ -66,8 +67,15 @@ Square.prototype.addMark = function(markBeingPassedIntoMethod) {
 }
 
 // UI Logic -----
+function attachTicContainerListener() {
+  $("div.tic-container").on("click", "div.tic-box", function() {
+    $("div.tic-box").text("X");
+  })
+}
+
 $(document).ready(function() {
+  attachTicContainerListener()
   $("#userName").submit(function(event) {
     event.preventDefault();
-  })
+  });
 })
