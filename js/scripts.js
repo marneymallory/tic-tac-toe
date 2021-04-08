@@ -46,21 +46,29 @@ Game.prototype.isItOver = function() {
   
   const xPlayerString = xPlayerSquaresFilled.toString();
   
-  const winningPossibilites = [[1,2,3] [1,4,7] [1,5,9] [4,5,6] [7,8,9] [3,5,7] [2,5,8] [3,6,9]];
-  let winningArray = [];
-  
+  const winningPossibilites = [[1,2,3], [1,4,7], [1,5,9], [4,5,6], [7,8,9], [3,5,7], [2,5,8], [3,6,9]];
+  let winner;
+  console.log(xPlayerSquaresFilled);
+  console.log(oPlayerSquaresFilled);
+  console.log(emptySquares);
   winningPossibilites.forEach(function(possibility) {
     //possibility = [1, 2, 3];
-    if(xPlayerSquaresFilled.includes(possibility[0]) && xPlayerSquaresFilled.includes(possibility[1]) && xPlayerSquaresFilled.includes(possibility[2])) {
-      return "X";
+    console.log(possibility);
+    if(xPlayerSquaresFilled.includes(possibility[0].toString()) && xPlayerSquaresFilled.includes(possibility[1].toString()) && xPlayerSquaresFilled.includes(possibility[2].toString())) {
+      console.log("X wins!")
+      winner = "X";
     }
-    if(oPlayerSquaresFilled.includes(possibility[0]) && oPlayerSquaresFilled.includes(possibility[1]) && oPlayerSquaresFilled.includes(possibility[2])) {
-      return "O";
+    if(oPlayerSquaresFilled.includes(possibility[0].toString()) && oPlayerSquaresFilled.includes(possibility[1].toString()) && oPlayerSquaresFilled.includes(possibility[2].toString())) {
+      console.log("O wins!")
+      winner = "O";
     }
     if(emptySquares.length === 0) {
-      return "Draw";
+      winner = "Draw";
     }
   })
+  if (winner) {
+    return winner;
+  }
   return "Continue";
 }
 
@@ -92,18 +100,17 @@ Gameboard.prototype.populateSquares = function() {
   }
 }
 
-
-
-
 Gameboard.prototype.squaresFilledByPlayer = function(markedWithSymbol){
-  const squareKeys = Object.keys(this.squares);
+  const squares = this.squares;
+  const squareKeys = Object.keys(squares);
   let squareNumbersFilled = [];
   squareKeys.forEach(function(key) {
-    const squareSymbol = this.squares[key].markedWithSymbol;
+    const squareSymbol = squares[key].markedWithSymbol;
     if (squareSymbol === markedWithSymbol){
       squareNumbersFilled.push(key); //not sure if key == square number, debug later?
     }
   });
+  console.log(squareNumbersFilled);
   return squareNumbersFilled; //array of square numbers that have the markedWithSymbol character
 }
 
@@ -118,13 +125,23 @@ Square.prototype.addMark = function(markBeingPassedIntoMethod) {
 // UI Logic -----
 function attachTicContainerListener(game) {
   $("div.tic-container").on("click", "div.tic-box", function() {
-    //user clicks a box
-    //check who's turn it is
     const currentPlayerTurn = game.whosTurn;
+    const clickedSquare = game.gameboard.squares[this.id];
+    
     //based on who's turn it is, either put in an X or O
-    if(this.whosTurn === "Player 1") {
-      this.
-    $("#" + this.id).text("X");
+    let playerSymbol;
+    if(currentPlayerTurn === "Player 1") {
+      playerSymbol = "X";
+    } else if (currentPlayerTurn === "Player 2") {
+      playerSymbol= "O";
+    }
+    clickedSquare.markedWithSymbol = playerSymbol;
+    game.myTurnDone();
+
+    $("#" + this.id).text(playerSymbol);
+    let winner = game.isItOver();
+    $(".tic-panel").text(winner);
+    console.log(clickedSquare.markedWithSymbol);
     console.log("#" + this.id); //this.id = 1 ->
     console.log(`#${this.id}`); //${this.id} = 1 -> "#1" '#${this.id}'
   })
