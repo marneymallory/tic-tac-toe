@@ -9,14 +9,14 @@ Player.prototype.isMyTurn = function(fact) {
 } 
 
 // Business Logic for Game -----
-function Game(gameboard) {
-  this.players = {}
-  this.gameboard = gameboard
-  this.whosTurn = "Player 1"
+function Game() {
+  this.players = {};
+  this.gameboard;
+  this.whosTurn = "Player 1";
   this.currentId = 0;
 }
 
-Game.prototype.assignID = function(){
+Game.prototype.assignId = function(){
   this.currentId += 1;
   return this.currentId;
 }
@@ -24,6 +24,18 @@ Game.prototype.assignID = function(){
 Game.prototype.addPlayer = function(player) {
   player.id = this.assignId();
   this.players[player.id] = player;
+}
+
+Game.prototype.addBoard = function(board) {
+  this.gameboard = board;
+}
+
+Game.prototype.myTurnDone = function() {
+  if (this.whosTurn === "Player 1") {
+    this.whosTurn = "Player 2";
+  } else if (this.whosTurn === "Player 2") {
+    this.whosTurn = "Player 1";
+  }
 }
 
 Game.prototype.isItOver = function() {
@@ -50,6 +62,12 @@ Game.prototype.isItOver = function() {
     }
   })
   return "Continue";
+}
+
+Game.prototype.resetGame = function() {
+  this.players = {};
+  this.whosTurn = "Player 1";
+  this.currentId = 0;
 }
 
 // Business Logic for Gameboard -----
@@ -98,8 +116,14 @@ Square.prototype.addMark = function(markBeingPassedIntoMethod) {
 }
 
 // UI Logic -----
-function attachTicContainerListener() {
+function attachTicContainerListener(game) {
   $("div.tic-container").on("click", "div.tic-box", function() {
+    //user clicks a box
+    //check who's turn it is
+    const currentPlayerTurn = game.whosTurn;
+    //based on who's turn it is, either put in an X or O
+    if(this.whosTurn === "Player 1") {
+      this.
     $("#" + this.id).text("X");
     console.log("#" + this.id); //this.id = 1 ->
     console.log(`#${this.id}`); //${this.id} = 1 -> "#1" '#${this.id}'
@@ -107,9 +131,11 @@ function attachTicContainerListener() {
 }
 
 $(document).ready(function() {
-  attachTicContainerListener()
+  const game = new Game();
+  attachTicContainerListener(game)
   $("#userName").submit(function(event) {
     event.preventDefault();
+    game.resetGame();
     const playerOneName = $("#player1").val();
     const playerTwoName = $("#player2").val();
 
@@ -117,9 +143,12 @@ $(document).ready(function() {
     const playerTwo = new Player("O", playerTwoName);
     const gameBoard = new Gameboard();
     gameBoard.populateSquares();
-    const game = new Game(gameBoard, playerOne, playerTwo);
+    game.addPlayer(playerOne); 
+    game.addPlayer(playerTwo);
+    game.addBoard(gameBoard);
     console.log(playerOne);
     console.log(playerTwo);
     console.log(gameBoard);
+    console.log(game);
   });
 })
