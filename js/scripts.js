@@ -9,10 +9,21 @@ Player.prototype.isMyTurn = function(fact) {
 } 
 
 // Business Logic for Game -----
-function Game(players, gameboard, Player1git) {
-  this.players = players
+function Game(gameboard) {
+  this.players = {}
   this.gameboard = gameboard
   this.whosTurn = "Player 1"
+  this.currentId = 0;
+}
+
+Game.prototype.assignID = function(){
+  this.currentId += 1;
+  return this.currentId;
+}
+
+Game.prototype.addPlayer = function(player) {
+  player.id = this.assignId();
+  this.players[player.id] = player;
 }
 
 Game.prototype.isItOver = function() {
@@ -42,9 +53,29 @@ Game.prototype.isItOver = function() {
 }
 
 // Business Logic for Gameboard -----
-function Gameboard(squares) {
-  this.squares = squares
+function Gameboard() {
+  this.squares = {};
+  this.currentId = 0;
 }
+
+Gameboard.prototype.addSquare = function(square) {
+  this.currentId += 1;
+  square.id = this.currentId;
+  this.squares[square.id] = square;
+}
+
+Gameboard.prototype.populateSquares = function() {
+  //const someArray = [3, 7, 9, 1];
+  //someArray.forEach(function(element) { do something })
+  for (let i = 0; i < 9; i+=1) { //this loop just says to run 9 times
+    //make a square object with a constructor
+    let newSquare = new Square();
+    this.addSquare(newSquare); //add sqauare to gameboard
+  }
+}
+
+
+
 
 Gameboard.prototype.squaresFilledByPlayer = function(markedWithSymbol){
   const squareKeys = Object.keys(this.squares);
@@ -69,7 +100,9 @@ Square.prototype.addMark = function(markBeingPassedIntoMethod) {
 // UI Logic -----
 function attachTicContainerListener() {
   $("div.tic-container").on("click", "div.tic-box", function() {
-    $("div.tic-box").text("X");
+    $("#" + this.id).text("X");
+    console.log("#" + this.id); //this.id = 1 ->
+    console.log(`#${this.id}`); //${this.id} = 1 -> "#1" '#${this.id}'
   })
 }
 
@@ -77,5 +110,16 @@ $(document).ready(function() {
   attachTicContainerListener()
   $("#userName").submit(function(event) {
     event.preventDefault();
+    const playerOneName = $("#player1").val();
+    const playerTwoName = $("#player2").val();
+
+    const playerOne = new Player("X", playerOneName);
+    const playerTwo = new Player("O", playerTwoName);
+    const gameBoard = new Gameboard();
+    gameBoard.populateSquares();
+    const game = new Game(gameBoard, playerOne, playerTwo);
+    console.log(playerOne);
+    console.log(playerTwo);
+    console.log(gameBoard);
   });
 })
